@@ -1,0 +1,4 @@
+TODO
+
+~Textbox to show URL & button to Navigate there
+~Επιλογή να γίνεται sort ανά τιμή
