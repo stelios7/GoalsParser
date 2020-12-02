@@ -19,3 +19,6 @@ C:\Users\paokf\Documents\VS Studio\GoalsParser\obj\Debug\GoalsParser.exe.manifes
 C:\Users\paokf\Documents\VS Studio\GoalsParser\obj\Debug\GoalsParser.application
 C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Newtonsoft.Json.dll
 C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Newtonsoft.Json.xml
+C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Resources\jsonDB.json
+C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Resources\out111.txt
+C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Resources\out222.txt

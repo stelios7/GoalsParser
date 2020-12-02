@@ -1,20 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System.IO;
-using System.Globalization;
-using System.Diagnostics;
 using System.Windows.Forms;
-using System.Windows.Threading;
 
 namespace GoalsParser
 {
@@ -31,63 +26,156 @@ namespace GoalsParser
           /// </remarks>
           public static ConcurrentDictionary<string, Game> dCoupon = new ConcurrentDictionary<string, Game>();
           public static List<Task> awaitedTasks = new List<Task>();
-          public const string resourcesPath = @"C:\users\paokf\Documents\VS Studio\GoalsParser\Resources\";
           public string jsonFullPath;
-          public string json1Path;
-          public string json2Path;
+          public string normal1Path;
+          public string normal2Path;
           public static HashSet<Game> FinalSet = new HashSet<Game>();
           public static HashSet<Game> GamesData;
           public DateTime LastDate = new DateTime();
+          /// <remarks>
+          /// This list holds all the available competions.
+          /// </remarks>
+          public List<string> Competitions = new List<string>();
+          #endregion
+
+          #region MOUSE DRAG FORM IMPLEMENTATION
+          private bool mouseDown;
+          private Point lastLocation;
+          private void CustomMouseDown(object sender, MouseEventArgs e)
+          {
+               if (e.Button == MouseButtons.Left)
+               {
+                    mouseDown = true;
+                    lastLocation = e.Location;
+               }
+               else
+               {
+                    ContextMenu cm = new ContextMenu();
+                    cm.MenuItems.Add("CLOSE");
+                    cm.MenuItems[0].Click += new System.EventHandler(CloseForm);
+                    this.ContextMenu = cm;
+               }
+          }
+          private void CloseForm(object sender, EventArgs e)
+          {
+               var answer = MessageBox.Show("KLEISIMO?", "Exit", MessageBoxButtons.OKCancel);
+               if (answer == DialogResult.OK)
+               {
+                    this.Close();
+               }
+          }
+          private void CustomMouseMove(object sender, MouseEventArgs e)
+          {
+               if(mouseDown)
+               {
+                    this.Location = new Point(
+                         (this.Location.X - lastLocation.X) + e.X,
+                         (this.Location.Y - lastLocation.Y) + e.Y
+                         );
+                    this.Update();
+               }
+          }
           #endregion
           private void InitializeFields()
           {
                GamesData = new HashSet<Game>();
-               jsonFullPath = resourcesPath + @"\jsonOutFull.json";
-               json1Path = resourcesPath + @"\jOut1.json";
-               json2Path = resourcesPath + @"\jOut2.json";
+               jsonFullPath = Environment.CurrentDirectory + @"\Resources\jsonDB.json";
+               normal1Path = Environment.CurrentDirectory + @"\Resources\111.txt";
+               normal2Path = Environment.CurrentDirectory + @"\Resources\222.txt";
+
+               mainControls = new List<Control>()
+               {
+                    buttonUpdateMain,
+                    buttonShowResults,
+                    flowLayoutPanel1,
+                    tableLayoutPanel5,
+                    tableLayoutPanel6
+               };
+          }
+          private void SubscribeControls()
+          {
+               List<Control> controls = new List<Control>()
+               {
+                    tableLayoutPanel1,
+                    tableLayoutPanel2,
+                    tableLayoutPanel3,
+                    tableLayoutPanel5,
+                    tableLayoutPanel6,
+                    flowLayoutPanel1
+               };
+               foreach (Control c in controls)
+               {
+                    c.MouseDown += new System.Windows.Forms.MouseEventHandler(CustomMouseDown);
+                    c.MouseUp += new System.Windows.Forms.MouseEventHandler((s,e) => { mouseDown = false; });
+                    c.MouseMove += new System.Windows.Forms.MouseEventHandler(CustomMouseMove);
+               }
+
+               controls = new List<Control>()
+               {
+                    textBoxOdds2,
+                    textBoxOddsX,
+                    textBoxOdds1,
+                    textBoxTargetTziros,
+                    textBoxTargetPct1,
+                    textBoxTargetPctΧ,
+                    textBoxTargetPct2,
+               };
+               foreach (Control c in controls)
+               {
+                    c.KeyDown += new System.Windows.Forms.KeyEventHandler((sender, e) =>
+                    {
+                         if(e.KeyCode == Keys.Enter)
+                         {
+                              PopulateDataGrid();
+                         }
+                    });
+               }
           }
           public MainForm()
           {
-               InitializeFields();
                InitializeComponent();
-               ResetButtons(true, false, false, false);
-
-               // LOAD
+               InitializeFields();
+               SubscribeControls();
+               DisableControls(mainControls);
           }
 
+          public List<Control> mainControls;
+          private void EnableControls(List<Control> controls)
+          {
+               foreach (Control c in controls)
+               {
+                    if (c.InvokeRequired)
+                         c.BeginInvoke(new Action(() => { c.Enabled = true; }));
+                    else
+                         c.Enabled = true;
+               }
+          }
+          private void DisableControls(List<Control> controls)
+          {
+               foreach(Control c in controls)
+               {
+                    c.Enabled = false;
+               }
+          }
           /// <summary>
           /// Sets the 'Enabled' property of Load, Update, Update1 and Update2 buttons
           /// </summary>
-          private void ResetButtons(bool load, bool u, bool u1, bool u2)
-          {
-               if (buttonLoadData.InvokeRequired)
-                    buttonLoadData.BeginInvoke(new Action(() => { buttonLoadData.Enabled = load; }));
-               else
-                    this.buttonLoadData.Enabled = load;
-
-               if (buttonUpdateMain.InvokeRequired)
-                    buttonUpdateMain.BeginInvoke(new Action(() => { buttonUpdateMain.Enabled = u; }));
-               else
-                    this.buttonUpdateMain.Enabled = u;
-
-               if (buttonUpdate1.InvokeRequired)
-                    buttonUpdate1.BeginInvoke(new Action(() => { buttonUpdate1.Enabled = u1; }));
-               else
-                    this.buttonUpdate1.Enabled = u1;
-
-               if (buttonUpdate2.InvokeRequired)
-                    buttonUpdate2.BeginInvoke(new Action(() => { buttonUpdate2.Enabled = u2; }));
-               else
-                    this.buttonUpdate2.Enabled = u2;
-          }
           private void buttonLoadData_Click(object sender, EventArgs e)
           {
                buttonLoadData.Enabled = false;
+               string[] lines = File.ReadAllLines(jsonFullPath);
+               progressBar1.Maximum = lines.Length;
+               int k = 0;
+               int step = 50;
                Task t = Task.Run(() =>
                {
-                    foreach (string line in File.ReadAllLines(resourcesPath + "jsonOutFull.json"))
+                    foreach (string line in lines)
                     {
+                         k++;
                          GamesData.Add(JsonConvert.DeserializeObject<Game>(line));
+
+                         if (k % step == 0) progressBar1.Invoke(new Action(() => { progressBar1.Value += step; }));
+
                     }
                }).ContinueWith(result =>
                {
@@ -104,15 +192,23 @@ namespace GoalsParser
 
                     if (DateTime.Compare(LastDate, DateTime.Today.AddDays(-1)) == 0)
                     {
-                         MessageBox.Show($"Games are up to date");
-                         ResetButtons(true, false, false, false);
+                         //MessageBox.Show($"Games are up to date {k}");
+                         if (progressBar1.InvokeRequired)
+                              progressBar1.Invoke(new Action(() => { progressBar1.Value = 0; }));
+                         else
+                              progressBar1.Value = 0;
+
+                         EnableControls(mainControls);
+                         buttonUpdateMain.Invoke(new Action(() => { buttonUpdateMain.Enabled = false; }));
                     }
                     else
                     {
-                         MessageBox.Show($"Last day was {LastDate.ToString("dd-MM-yyyy")}");
-                         ResetButtons(false, true, false, false);
+                         //MessageBox.Show($"Last day was {LastDate.ToString("dd-MM-yyyy")} {k}");
+                         if (progressBar1.InvokeRequired)
+                              progressBar1.Invoke(new Action(() => { progressBar1.Value = 0; }));
+                         else
+                              progressBar1.Value = 0;
                     }
-
                });
           }
           /// <summary>
@@ -122,8 +218,50 @@ namespace GoalsParser
           /// <param name="e"></param>
           private void buttonUpdateMain_Click(object sender, EventArgs e)
           {
-               buttonUpdateMain.Enabled = false;
-               Task.Run(() => UpdateData(LastDate.ToString("yyyy-MM-dd"), DateTime.Today.ToString("yyyy-MM-dd")));
+               // UPDATES the main jsonDB.json database file **!!AND!!** both .txt files
+               //buttonUpdateMain.Enabled = false;
+               string path1 = normal1Path;
+               string path2 = normal2Path;
+               if (DateTime.Compare(LastDate, DateTime.Today.AddDays(-1)) != 0)
+               {
+                    Task t = Task.Run(() => UpdateData(LastDate.ToString("yyyy-MM-dd"), DateTime.Today.ToString("yyyy-MM-dd")))
+                         .ContinueWith(result =>
+                         {
+                              // Apply basic filters to the data and write the first file
+                              var g1 = from v in GamesData
+                                       where v.totalTziros > 10000
+                                       && v.pct1 > v.pctX && v.pct1 > v.pct2
+                                       select v;
+                              g1 = g1.OrderBy(g => g.pct1).ThenByDescending(g => g.odds1).ThenByDescending(g => g.oddsX);
+
+                              // Apply basic filters to the data and write the first file
+                              var g2 = from v in GamesData
+                                       where v.totalTziros > 10000
+                                       && v.pct2 > v.pctX && v.pct2 > v.pct1
+                                       select v;
+                              g2 = g2.OrderBy(g => g.pct2).ThenByDescending(g => g.odds2).ThenByDescending(g => g.odds1);
+
+                              WriteTextData(g1, path1, wMode.Write);
+                              WriteTextData(g2, path2, wMode.Write);
+                         });
+               }
+               else
+               {
+                    var g1 = from v in GamesData
+                             where v.totalTziros > 10000
+                             && v.pct1 > v.pctX && v.pct1 > v.pct2
+                             select v;
+                    g1 = g1.OrderBy(g => g.pct1).ThenByDescending(g => g.odds1).ThenByDescending(g => g.oddsX);
+
+                    var g2 = from v in GamesData
+                             where v.totalTziros > 10000
+                             && v.pct2 > v.pctX && v.pct2 > v.pct1
+                             select v;
+                    g2 = g2.OrderBy(g => g.pct2).ThenByDescending(g => g.odds2).ThenByDescending(g => g.odds1);
+
+                    WriteTextData(g1, path1, wMode.Write);
+                    WriteTextData(g2, path2, wMode.Write);
+               }
           }
           private async Task UpdateData(string startingDate, string endDate)
           {
@@ -143,16 +281,24 @@ namespace GoalsParser
 
                await Task.Run(() => Task.WhenAll(awaitedTasks.ToArray()));
 
-               foreach(string key in dTziros.Keys)
+               foreach (string key in dTziros.Keys)
                {
                     if (dCoupon.ContainsKey(key))
                     {
                          FinalSet.Add(MergeGames(dCoupon[key], dTziros[key]));
                     }
                }
-               MessageBox.Show($"There are {FinalSet.Count} new games to be added");
+               var vSet = FinalSet
+                    .Where(g => g.pct1 > 0)
+                    .Where(g => g.pctX > 0)
+                    .Where(g => g.pct2 > 0)
+                    .Where(g => g.odds1 > 0)
+                    .Where(g => g.oddsX > 0)
+                    .Where(g => g.odds2 > 0)
+                    .Where(g => g.totalTziros > 0);
+               //MessageBox.Show($"There are {vSet.Count<Game>()} new games to be added");
 
-               WriteData(FinalSet.AsEnumerable(), jsonFullPath, wMode.Append);
+               WriteData(vSet, jsonFullPath, wMode.Append);
           }
           private async Task ScrapeTzirosAsync(string date)
           {
@@ -167,8 +313,8 @@ namespace GoalsParser
                           from row in table.SelectNodes("tr").Cast<HtmlNode>()
                           where row.Attributes.Contains("class") && row.Attributes["class"].Value != "betfair-spacer"
                           select row;
-               
-               foreach(HtmlNode row in rows)
+
+               foreach (HtmlNode row in rows)
                {
                     string rowID = row.Attributes["id"].Value.Substring(0, 3);
                     switch (rowID)
@@ -319,6 +465,294 @@ namespace GoalsParser
                               }
                          }
                          break;
+               }
+          }
+          public void WriteTextData(IEnumerable<Game> data, string outputFile, wMode mode)
+          {
+               int lCount = data.Count();
+               progressBar1.Invoke(new Action(() => { progressBar1.Maximum = lCount; }));
+               switch (mode)
+               {
+                    case wMode.Write:
+                         using (TextWriter writer = File.CreateText(outputFile))
+                         {
+                              int sCount = 0;
+                              int vIndex = 0;
+                              int k = 0;
+                              int step = 20;
+                              foreach (Game g in data)
+                              {
+                                   k++;
+                                   sCount = int.Parse(g.pct1.ToString().Split(".".ToCharArray(), 2)[0]);
+                                   if (sCount > vIndex) {
+                                        vIndex = sCount;
+                                        writer.WriteLine($"\n{vIndex}\n");
+                                   }
+                                   StringBuilder text = new StringBuilder();
+                                   text.AppendFormat("{0,7}", $"{g.pct1.ToString("0.00")}% ");
+                                   text.AppendFormat("{0,7}", $"{g.pctX.ToString("0.00")}% ");
+                                   text.AppendFormat("{0,9}", $"{g.pct2.ToString("0.00")}% / ");
+
+                                   text.Append(g.result == Game.Results.ASSOS ? "1 / " : g.result == Game.Results.DIPLO ? "2 / " : "X / ");
+                                   text.Append($"{g.score} / ");
+
+                                   text.AppendFormat("{0,6}", $"{g.odds1.ToString("0.00")} ");
+                                   text.AppendFormat("{0,6}", $"{g.oddsX.ToString("0.00")} ");
+                                   text.AppendFormat("{0,9}", $"{g.odds2.ToString("0.00")}  / ");
+
+                                   var o15 = g.Over15 ? "O15 " : "-  ";
+                                   var o25 = g.Over25 ? "O25 " : "-  ";
+                                   var o35 = g.Over35 ? "O35 / " : "-  / ";
+                                   text.AppendFormat("{0,4} {1,4} {2,6}", o15, o25, o35);
+
+                                   text.AppendFormat("{0,11}", $"{g.totalTziros.ToString().Trim()}€ / ");
+                                   text.Append($"{DateTime.Parse(g.gameDay).ToString("dd-MM-yyyy")} / ");
+                                   text.Append($"{g.competition} / ");
+                                   text.Append($"{g.teamHome} - {g.teamAway}");
+                                   writer.WriteLine(text.ToString());
+                                   if (k % step == 0)
+                                   {
+                                        progressBar1.Invoke(new Action(() => { progressBar1.Value += step; }));
+                                   }
+                              }
+                              progressBar1.Invoke(new Action(() => { progressBar1.Value = 0; }));
+                         }
+                         break;
+                    case wMode.Append:
+                         using (TextWriter writer = File.AppendText(outputFile))
+                         {
+                              foreach (Game g in data)
+                              {
+                                   writer.WriteLine(JsonConvert.SerializeObject(g));
+                              }
+                         }
+                         break;
+               }
+
+          }
+          private void CreateOut1File(string path, IEnumerable<Game> data)
+          {
+               using (TextWriter writer = File.CreateText(path))
+               {
+                    foreach (Game game in data)
+                    {
+                         writer.WriteLine(StringifyGame(game));
+                    }
+               }
+          }
+          private string StringifyGame(Game game)
+          {
+               StringBuilder builder = new StringBuilder();
+               builder.Append($"{game.pct1} {game.pctX} {game.pct2} / {game.result} / {game.score}");
+               return builder.ToString();
+          }
+          private void buttonOpenFile1_Click(object sender, EventArgs e)
+          {
+               var data = from t in GamesData
+                          where t.totalTziros > 10000
+                          && t.pct1 > t.pctX && t.pct1 > t.pct2
+                          select t;
+               data = data.OrderBy(t => t.pct1).ThenByDescending(t => t.pctX);
+               CreateOut1File(normal1Path, data);
+          }
+          private void buttonShowResults_Click(object sender, EventArgs e)
+          {
+               PopulateDataGrid();
+          }
+          private void PopulateDataGrid()
+          {
+               string[] cNames = new string[12] { "% ΑΣΣΟΣ", "% Χ", "% ΔΙΠΛΟ", "ΤΕΛΙΚΟ", "ΣΚΟΡ", "ΑΠΟΔΟΣΗ 1", "ΑΠΟΔΟΣΗ Χ", "ΑΠΟΔΟΣΗ 2", "ΤΖΙΡΟΣ", "ΟΒΕΡ 1,5", "ΟΒΕΡ 2,5", "ΟΒΕΡ 3,5" };
+               DataTable dt = new DataTable();
+               dt.BeginLoadData();
+               for (int i = 0; i < cNames.Length; i++)
+               {
+                    dt.Columns.Add(cNames[i]);
+                    dt.Columns[i].AllowDBNull = true;
+               }
+
+               object[] filters = GetFilters();
+               int tgTziros = (int)filters[0];
+               float tp1 = (float)filters[1];
+               float tpX = (float)filters[2];
+               float tp2 = (float)filters[3];
+               string tgMode = (string)filters[4];
+               float margin = 0.02f;
+               float tgO1 = (float)filters[5];
+               float tgOX = (float)filters[6];
+               float tgO2 = (float)filters[7];
+
+               var vGames = GamesData
+                    .Where(g => tgTziros > 0 ? g.totalTziros >= tgTziros : g.totalTziros > 10000)
+                    .ToHashSet();
+
+               if (tgMode == "SHOW1" || tgMode.Length == 0)
+               {
+                    vGames = vGames
+                         .Where(g => g.pct1 > g.pct2 && g.pct1 > g.pctX)
+                         //.Where(g => g.pct1IsCloseTo(tp1, margin))
+                         .ToHashSet();
+               }
+               else
+               {
+                    vGames = vGames
+                         .Where(g => g.pct2 > g.pct1 && g.pct2 > g.pctX)
+                         //.Where(g => g.pct2IsCloseTo(tp1, margin))
+                         .ToHashSet();
+               }
+
+               if (tp1 > 0)
+                    vGames = vGames.Where(g => g.pct1IsCloseTo(tp1, margin)).ToHashSet();
+
+               if (tpX > 0)
+                    vGames = vGames.Where(g => g.pctXIsCloseTo(tpX, margin)).ToHashSet();
+
+               if (tp2 > 0)
+                    vGames = vGames.Where(g => g.pct2IsCloseTo(tp2, margin)).ToHashSet();
+
+               if (tgO1 > 0)
+                    vGames = vGames.Where(g => g.odds1 == tgO1).ToHashSet();
+
+               if (tgOX > 0)
+                    vGames = vGames.Where(g => g.oddsX == tgOX).ToHashSet();
+
+               if (tgO2 > 0)
+                    vGames = vGames.Where(g => g.odds2 == tgO2).ToHashSet();
+
+               vGames = vGames
+                    .OrderBy(g => tgMode == "SHOW1" || tgMode.Length == 0 ? g.pct1 : g.pct2)
+                    .ThenBy(g => g.odds1)
+                    .ThenBy(g => g.oddsX)
+                    .ThenBy(g => g.odds2)
+                    .ThenByDescending(g => g.pctX)
+                    .ThenByDescending(g => g.pct2)
+                    .ToHashSet();
+
+               foreach (var item in vGames)
+               {
+                    dt.Rows.Add(
+                         item.pct1.ToString("0.00"),
+                         item.pctX.ToString("0.00"),
+                         item.pct2.ToString("0.00"),
+                         item.result == Game.Results.ASSOS ? "1" : item.result == Game.Results.DIPLO ? "2" : "X",
+                         item.score,
+                         item.odds1.ToString("0.00"),
+                         item.oddsX.ToString("0.00"),
+                         item.odds2.ToString("0.00"),
+                         item.totalTziros,
+                         item.Over15 ? "+" : string.Empty,
+                         item.Over25 ? "+" : string.Empty,
+                         item.Over35 ? "+" : string.Empty
+                         );
+               }
+               labelDataCount.Text = String.Concat(vGames.Count.ToString(), " αποτελέσματα");
+               dataGridView1.DataSource = dt;
+          }
+          private object[] GetFilters()
+          {
+               string pm1 = "SHOW1";
+               string pm2 = "SHOW2";
+
+               var previewMode = checkBoxShow1.Checked ? pm1 : checkBoxShow2.Checked ? pm2 : pm1;
+               int tzirosTarget = 0;
+               try{
+                    tzirosTarget = int.Parse(textBoxTargetTziros.Text);
+               }
+               catch (System.FormatException fe){
+                    //MessageBox.Show(string.Concat("LATHOS TZIROS"));
+               }
+
+               float p1 = 0f;
+               if (textBoxTargetPct1.Text.Length > 0)
+               {
+                    try
+                    {
+                         p1 = float.Parse(textBoxTargetPct1.Text);
+                    }
+                    catch (FormatException fe)
+                    {
+                         textBoxTargetPct1.Text = string.Empty;
+                    }
+               }
+
+               float pX = 0f;
+               if (textBoxTargetPctΧ.Text.Length > 0)
+               {
+                    try
+                    {
+                         pX = float.Parse(textBoxTargetPctΧ.Text);
+                    }
+                    catch (FormatException fe)
+                    {
+                         textBoxTargetPctΧ.Text = string.Empty;
+                    }
+               }
+
+               float p2 = 0f;
+               if (textBoxTargetPct2.Text.Length > 0)
+               {
+                    try
+                    {
+                         p2 = float.Parse(textBoxTargetPct2.Text);
+                    }
+                    catch (FormatException fe)
+                    {
+                         textBoxTargetPct2.Text = string.Empty;
+                    }
+               }
+
+               float t1 = 0;
+               if (textBoxOdds1.Text.Length > 0)
+               {
+                    try
+                    {
+                         t1 = float.Parse(textBoxOdds1.Text);
+                    }
+                    catch (FormatException fe)
+                    {
+                         textBoxOdds1.Text = "";
+                    }
+               }
+
+               float t2 = 0;
+               if (textBoxOddsX.Text.Length > 0)
+               {
+                    try
+                    {
+                         t2 = float.Parse(textBoxOddsX.Text);
+                    }
+                    catch (FormatException fe)
+                    {
+                         textBoxOddsX.Text = "";
+                    }
+               }
+
+               float t3 = 0;
+               if (textBoxOdds2.Text.Length > 0)
+               {
+                    try
+                    {
+                         t3 = float.Parse(textBoxOdds2.Text);
+                    }
+                    catch (FormatException fe)
+                    {
+                         textBoxOdds2.Text = "";
+                    }
+               }
+
+               return new object[8] { tzirosTarget, p1, pX, p2, previewMode, t1, t2, t3 };
+          }
+          private void checkBox1_CheckedChanged(object sender, EventArgs e)
+          {
+               if(checkBoxShow2.Checked && checkBoxShow1.Checked)
+               {
+                    checkBoxShow2.Checked = false;
+               }
+          }
+          private void checkBoxShow2_CheckedChanged(object sender, EventArgs e)
+          {
+               if (checkBoxShow2.Checked && checkBoxShow1.Checked)
+               {
+                    checkBoxShow1.Checked = false;
                }
           }
      }
