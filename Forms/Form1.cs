@@ -10,6 +10,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System.IO;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace GoalsParser
 {
@@ -182,7 +183,7 @@ namespace GoalsParser
                     int timeSpan = 100;
                     foreach (Game g in GamesData)
                     {
-                         int dateDif = (int)(DateTime.Today - DateTime.Parse(g.gameDay)).TotalDays;
+                         int dateDif = (int)(DateTime.Today - DateTime.ParseExact(g.gameDay, "dd-MM-yy", CultureInfo.InvariantCulture)).TotalDays;
                          if (dateDif < timeSpan)
                          {
                               timeSpan = dateDif;
