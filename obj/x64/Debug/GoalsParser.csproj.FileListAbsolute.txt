@@ -22,3 +22,25 @@ C:\Users\paokf\Documents\VS Studio\GoalsParser\obj\x64\Debug\GoalsParser.csproj.
 C:\Users\paokf\Documents\VS Studio\GoalsParser\obj\x64\Debug\GoalsParser.exe
 C:\Users\paokf\Documents\VS Studio\GoalsParser\obj\x64\Debug\GoalsParser.pdb
 C:\Users\paokf\Documents\VS Studio\GoalsParser\obj\x64\Debug\GoalsParser.csprojAssemblyReference.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\Resources\jsonDB.json
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\GoalsParser.exe.config
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\GoalsParser.exe.manifest
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\GoalsParser.application
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\GoalsParser.exe
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\GoalsParser.pdb
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\HtmlAgilityPack.dll
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\Newtonsoft.Json.dll
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\HtmlAgilityPack.pdb
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\HtmlAgilityPack.xml
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\bin\x64\Debug\Newtonsoft.Json.xml
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.csprojAssemblyReference.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.MainForm.resources
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.Properties.Resources.resources
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.csproj.GenerateResource.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.csproj.CoreCompileInputs.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.TrustInfo.xml
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.exe.manifest
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.application
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.csproj.CopyComplete
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.exe
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser2\obj\x64\Debug\GoalsParser.pdb

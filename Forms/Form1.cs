@@ -11,13 +11,18 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Reflection;
 
 namespace GoalsParser
 {
      public partial class MainForm : Form
      {
           #region DECLARATIONS
+          #region ENUM
           public enum wMode { Write, Append }
+          #endregion
+
+          #region Dictionaries/Lists for GAME objects
           /// <remarks>
           /// Concurrent Dictionary to hold games scraped from TZIROS page
           /// </remarks>
@@ -26,17 +31,23 @@ namespace GoalsParser
           /// Concurrent Dictionary to hold games scraped from COUPON page
           /// </remarks>
           public static ConcurrentDictionary<string, Game> dCoupon = new ConcurrentDictionary<string, Game>();
-          public static List<Task> awaitedTasks = new List<Task>();
-          public string jsonFullPath;
-          public string normal1Path;
-          public string normal2Path;
           public static HashSet<Game> FinalSet = new HashSet<Game>();
           public static HashSet<Game> GamesData;
+          #endregion
+
+          public static List<Task> awaitedTasks = new List<Task>();
+          public string filePathJsonDB;
+          public string filePathOut1;
+          public string filePathOut2;
           public DateTime LastDate = new DateTime();
           /// <remarks>
           /// This list holds all the available competions.
           /// </remarks>
           public List<string> Competitions = new List<string>();
+          /// <remarks>
+          /// This list is responsible for the main control functionality. Enabling/Disabling
+          /// </remarks>
+          public List<Control> mainControls;
           #endregion
 
           #region MOUSE DRAG FORM IMPLEMENTATION
@@ -79,30 +90,53 @@ namespace GoalsParser
           #endregion
           private void InitializeFields()
           {
-               GamesData = new HashSet<Game>();
-               jsonFullPath = Environment.CurrentDirectory + @"\Resources\jsonDB.json";
-               normal1Path = Environment.CurrentDirectory + @"\Resources\111.txt";
-               normal2Path = Environment.CurrentDirectory + @"\Resources\222.txt";
+               #region Get jsonDB and create FilePaths
+               StreamReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GoalsParser.Files.jsonDB.txt"));
+               string text = reader.ReadToEnd();
 
+               GamesData = new HashSet<Game>();
+               var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\GoalsParser\";
+
+               Directory.CreateDirectory(path);
+               if (!File.Exists(path + "jsonDB.txt"))
+                    File.WriteAllText(path + "jsonDB.txt", text);
+
+               filePathJsonDB = path + "jsonDB.txt";
+               filePathOut1 = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\GoalsParser\out111.txt";
+               filePathOut2 = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\GoalsParser\out222.txt";
+               #endregion
+
+               // Create the mainControls list to allow enabling/disabling
                mainControls = new List<Control>()
                {
                     buttonUpdateMain,
                     buttonShowResults,
-                    flowLayoutPanel1,
+                    tableLayoutPanelSearchFilters,
                     tableLayoutPanel5,
                     tableLayoutPanel6
                };
           }
+          public MainForm()
+          {
+               InitializeComponent();
+               InitializeFields();
+               SubscribeControls();
+               DisableControls(mainControls);
+          }
+          /// <summary>
+          /// Subscribe different Control Groups to specific events.
+          /// <para>Drag window functionality</para>
+          /// <para>Right click functionality</para>
+          /// </summary>
           private void SubscribeControls()
           {
                List<Control> controls = new List<Control>()
                {
                     tableLayoutPanel1,
                     tableLayoutPanel2,
-                    tableLayoutPanel3,
                     tableLayoutPanel5,
                     tableLayoutPanel6,
-                    flowLayoutPanel1
+                    tableLayoutPanelSearchFilters
                };
                foreach (Control c in controls)
                {
@@ -132,15 +166,7 @@ namespace GoalsParser
                     });
                }
           }
-          public MainForm()
-          {
-               InitializeComponent();
-               InitializeFields();
-               SubscribeControls();
-               DisableControls(mainControls);
-          }
 
-          public List<Control> mainControls;
           private void EnableControls(List<Control> controls)
           {
                foreach (Control c in controls)
@@ -164,7 +190,7 @@ namespace GoalsParser
           private void buttonLoadData_Click(object sender, EventArgs e)
           {
                buttonLoadData.Enabled = false;
-               string[] lines = File.ReadAllLines(jsonFullPath);
+               string[] lines = File.ReadAllLines(filePathJsonDB);
                progressBar1.Maximum = lines.Length;
                int k = 0;
                int step = 50;
@@ -187,13 +213,13 @@ namespace GoalsParser
                          if (dateDif < timeSpan)
                          {
                               timeSpan = dateDif;
-                              LastDate = DateTime.Parse(g.gameDay);
+                              LastDate = DateTime.ParseExact(g.gameDay, "dd-MM-yy", CultureInfo.InvariantCulture);
                          }
                     }
 
                     if (DateTime.Compare(LastDate, DateTime.Today.AddDays(-1)) == 0)
                     {
-                         //MessageBox.Show($"Games are up to date {k}");
+                         MessageBox.Show($"Games are up to date {k}");
                          if (progressBar1.InvokeRequired)
                               progressBar1.Invoke(new Action(() => { progressBar1.Value = 0; }));
                          else
@@ -204,11 +230,16 @@ namespace GoalsParser
                     }
                     else
                     {
-                         //MessageBox.Show($"Last day was {LastDate.ToString("dd-MM-yyyy")} {k}");
+                         MessageBox.Show($"Last day was {LastDate.ToString("dd-MM-yyyy")} {k}");
                          if (progressBar1.InvokeRequired)
                               progressBar1.Invoke(new Action(() => { progressBar1.Value = 0; }));
                          else
                               progressBar1.Value = 0;
+
+                         if (buttonUpdateMain.InvokeRequired)
+                              buttonUpdateMain.Invoke(new Action(() => { buttonUpdateMain.Enabled = true; }));
+                         else
+                              buttonUpdateMain.Enabled = true;   
                     }
                });
           }
@@ -219,10 +250,8 @@ namespace GoalsParser
           /// <param name="e"></param>
           private void buttonUpdateMain_Click(object sender, EventArgs e)
           {
-               // UPDATES the main jsonDB.json database file **!!AND!!** both .txt files
+               // UPDATES the main jsonDB.txt database file **!!AND!!** both out111/out222.txt files
                //buttonUpdateMain.Enabled = false;
-               string path1 = normal1Path;
-               string path2 = normal2Path;
                if (DateTime.Compare(LastDate, DateTime.Today.AddDays(-1)) != 0)
                {
                     Task t = Task.Run(() => UpdateData(LastDate.ToString("yyyy-MM-dd"), DateTime.Today.ToString("yyyy-MM-dd")))
@@ -242,8 +271,8 @@ namespace GoalsParser
                                        select v;
                               g2 = g2.OrderBy(g => g.pct2).ThenByDescending(g => g.odds2).ThenByDescending(g => g.odds1);
 
-                              WriteTextData(g1, path1, wMode.Write);
-                              WriteTextData(g2, path2, wMode.Write);
+                              WriteFormattedData(g1, filePathOut1, wMode.Write);
+                              WriteFormattedData(g2, filePathOut2, wMode.Write);
                          });
                }
                else
@@ -260,8 +289,8 @@ namespace GoalsParser
                              select v;
                     g2 = g2.OrderBy(g => g.pct2).ThenByDescending(g => g.odds2).ThenByDescending(g => g.odds1);
 
-                    WriteTextData(g1, path1, wMode.Write);
-                    WriteTextData(g2, path2, wMode.Write);
+                    WriteFormattedData(g1, filePathOut1, wMode.Write);
+                    WriteFormattedData(g2, filePathOut2, wMode.Write);
                }
           }
           private async Task UpdateData(string startingDate, string endDate)
@@ -271,7 +300,7 @@ namespace GoalsParser
 
                int daysToParse = (int)(d2 - d1).TotalDays;
 
-               for (int i = 0; i < daysToParse; i++)
+               for (int i = 1; i < daysToParse; i++)
                {
                     var d = d1.AddDays(i).ToString("yyyy-MM-dd");
                     var t1 = Task.Run(() => ScrapeTzirosAsync(d));
@@ -299,7 +328,7 @@ namespace GoalsParser
                     .Where(g => g.totalTziros > 0);
                //MessageBox.Show($"There are {vSet.Count<Game>()} new games to be added");
 
-               WriteData(vSet, jsonFullPath, wMode.Append);
+               WriteData(vSet, filePathJsonDB, wMode.Append);
           }
           private async Task ScrapeTzirosAsync(string date)
           {
@@ -442,40 +471,35 @@ namespace GoalsParser
                return g3;
           }
           /// <summary>
-          /// Creates or over-writes .json file using provided <paramref name="data"/> to the
-          /// specified <paramref name="outputFile"/> path.</summary>
-          public static void WriteData(IEnumerable<Game> data, string outputFile, wMode mode)
+          /// Creates or over-writes a file using provided <paramref name="_games"/> to the specified <paramref name="_outFile"/> path.
+          /// </summary>
+          public static void WriteData(IEnumerable<Game> _games, string _outFile, wMode _mode)
           {
-               switch (mode)
+               if(_mode == wMode.Write)
                {
-                    case wMode.Write:
-                         using (TextWriter writer = File.CreateText(outputFile))
-                         {
-                              foreach (Game g in data)
-                              {
-                                   writer.WriteLine(JsonConvert.SerializeObject(g));
-                              }
-                         }
-                         break;
-                    case wMode.Append:
-                         using (TextWriter writer = File.AppendText(outputFile))
-                         {
-                              foreach (Game g in data)
-                              {
-                                   writer.WriteLine(JsonConvert.SerializeObject(g));
-                              }
-                         }
-                         break;
+                    using (TextWriter writer = File.CreateText(_outFile))
+                    {
+                         foreach(Game g in _games)
+                              writer.WriteLine(JsonConvert.SerializeObject(g));
+                    }
+               }
+               else if(_mode == wMode.Append)
+               {
+                    using (StreamWriter writer = File.AppendText(_outFile))
+                    {
+                         foreach (Game g in _games)
+                              writer.WriteLine(JsonConvert.SerializeObject(g));
+                    }
                }
           }
-          public void WriteTextData(IEnumerable<Game> data, string outputFile, wMode mode)
+          public void WriteFormattedData(IEnumerable<Game> data, string outputFile, wMode mode)
           {
                int lCount = data.Count();
                progressBar1.Invoke(new Action(() => { progressBar1.Maximum = lCount; }));
                switch (mode)
                {
                     case wMode.Write:
-                         using (TextWriter writer = File.CreateText(outputFile))
+                         using (StreamWriter writer = File.CreateText(outputFile))
                          {
                               int sCount = 0;
                               int vIndex = 0;
@@ -507,7 +531,7 @@ namespace GoalsParser
                                    text.AppendFormat("{0,4} {1,4} {2,6}", o15, o25, o35);
 
                                    text.AppendFormat("{0,11}", $"{g.totalTziros.ToString().Trim()}€ / ");
-                                   text.Append($"{DateTime.Parse(g.gameDay).ToString("dd-MM-yyyy")} / ");
+                                   text.Append($"{DateTime.ParseExact(g.gameDay, "dd-MM-yy", CultureInfo.InvariantCulture).ToString("dd-MM-yyyy")} / ");
                                    text.Append($"{g.competition} / ");
                                    text.Append($"{g.teamHome} - {g.teamAway}");
                                    writer.WriteLine(text.ToString());
@@ -554,7 +578,7 @@ namespace GoalsParser
                           && t.pct1 > t.pctX && t.pct1 > t.pct2
                           select t;
                data = data.OrderBy(t => t.pct1).ThenByDescending(t => t.pctX);
-               CreateOut1File(normal1Path, data);
+               CreateOut1File(filePathOut1, data);
           }
           private void buttonShowResults_Click(object sender, EventArgs e)
           {

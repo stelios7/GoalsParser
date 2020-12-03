@@ -43,22 +43,20 @@ namespace GoalsParser
                this.progressBar1 = new System.Windows.Forms.ProgressBar();
                this.tableLayoutPanelSearchFilters = new System.Windows.Forms.TableLayoutPanel();
                this.tableLayoutPanel6 = new System.Windows.Forms.TableLayoutPanel();
+               this.label1 = new System.Windows.Forms.Label();
+               this.textBoxTargetTziros = new System.Windows.Forms.TextBox();
                this.textBoxTargetPct1 = new System.Windows.Forms.TextBox();
                this.textBoxTargetPctΧ = new System.Windows.Forms.TextBox();
                this.textBoxTargetPct2 = new System.Windows.Forms.TextBox();
                this.label3 = new System.Windows.Forms.Label();
-               this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-               this.labelDataCount = new System.Windows.Forms.Label();
-               this.checkBoxShow2 = new System.Windows.Forms.CheckBox();
-               this.checkBoxShow1 = new System.Windows.Forms.CheckBox();
-               this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-               this.textBoxTargetTziros = new System.Windows.Forms.TextBox();
-               this.label1 = new System.Windows.Forms.Label();
                this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
                this.label4 = new System.Windows.Forms.Label();
+               this.checkBoxShow2 = new System.Windows.Forms.CheckBox();
                this.textBoxOdds1 = new System.Windows.Forms.TextBox();
+               this.checkBoxShow1 = new System.Windows.Forms.CheckBox();
                this.textBoxOddsX = new System.Windows.Forms.TextBox();
                this.textBoxOdds2 = new System.Windows.Forms.TextBox();
+               this.labelDataCount = new System.Windows.Forms.Label();
                this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
                this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
                this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -88,8 +86,6 @@ namespace GoalsParser
                this.tableLayoutPanel2.SuspendLayout();
                this.tableLayoutPanelSearchFilters.SuspendLayout();
                this.tableLayoutPanel6.SuspendLayout();
-               this.flowLayoutPanel1.SuspendLayout();
-               this.tableLayoutPanel3.SuspendLayout();
                this.tableLayoutPanel5.SuspendLayout();
                this.contextMenuStrip1.SuspendLayout();
                this.SuspendLayout();
@@ -100,7 +96,7 @@ namespace GoalsParser
                this.dataGridView1.AllowUserToDeleteRows = false;
                this.dataGridView1.AllowUserToOrderColumns = true;
                resources.ApplyResources(this.dataGridView1, "dataGridView1");
-               this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(48)))), ((int)(((byte)(78)))));
+               this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(38)))), ((int)(((byte)(44)))));
                dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
                dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
                dataGridViewCellStyle1.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold);
@@ -123,12 +119,12 @@ namespace GoalsParser
                this.dataGridView1.Name = "dataGridView1";
                this.dataGridView1.ReadOnly = true;
                dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-               dataGridViewCellStyle3.Font = new System.Drawing.Font("Franklin Gothic Book", 15F, System.Drawing.FontStyle.Bold);
+               dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Bold);
                this.dataGridView1.RowsDefaultCellStyle = dataGridViewCellStyle3;
                // 
                // tableLayoutPanel1
                // 
-               this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(29)))), ((int)(((byte)(63)))));
+               this.tableLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
                resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
                this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 2);
                this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
@@ -138,6 +134,7 @@ namespace GoalsParser
                // 
                // tableLayoutPanel2
                // 
+               this.tableLayoutPanel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
                resources.ApplyResources(this.tableLayoutPanel2, "tableLayoutPanel2");
                this.tableLayoutPanel2.Controls.Add(this.buttonLoadData, 0, 0);
                this.tableLayoutPanel2.Controls.Add(this.buttonUpdateMain, 0, 1);
@@ -146,7 +143,7 @@ namespace GoalsParser
                // 
                // buttonLoadData
                // 
-               this.buttonLoadData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(48)))), ((int)(((byte)(78)))));
+               this.buttonLoadData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(38)))), ((int)(((byte)(44)))));
                resources.ApplyResources(this.buttonLoadData, "buttonLoadData");
                this.buttonLoadData.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(131)))), ((int)(((byte)(155)))), ((int)(((byte)(151)))));
                this.buttonLoadData.ForeColor = System.Drawing.Color.White;
@@ -156,7 +153,7 @@ namespace GoalsParser
                // 
                // buttonUpdateMain
                // 
-               this.buttonUpdateMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(48)))), ((int)(((byte)(78)))));
+               this.buttonUpdateMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(38)))), ((int)(((byte)(44)))));
                resources.ApplyResources(this.buttonUpdateMain, "buttonUpdateMain");
                this.buttonUpdateMain.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(131)))), ((int)(((byte)(155)))), ((int)(((byte)(151)))));
                this.buttonUpdateMain.ForeColor = System.Drawing.Color.White;
@@ -166,7 +163,7 @@ namespace GoalsParser
                // 
                // buttonShowResults
                // 
-               this.buttonShowResults.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(48)))), ((int)(((byte)(78)))));
+               this.buttonShowResults.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(38)))), ((int)(((byte)(44)))));
                resources.ApplyResources(this.buttonShowResults, "buttonShowResults");
                this.buttonShowResults.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(131)))), ((int)(((byte)(155)))), ((int)(((byte)(151)))));
                this.buttonShowResults.ForeColor = System.Drawing.Color.White;
@@ -184,99 +181,70 @@ namespace GoalsParser
                // 
                // tableLayoutPanelSearchFilters
                // 
+               this.tableLayoutPanelSearchFilters.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
                resources.ApplyResources(this.tableLayoutPanelSearchFilters, "tableLayoutPanelSearchFilters");
                this.tableLayoutPanelSearchFilters.Controls.Add(this.tableLayoutPanel6, 1, 0);
-               this.tableLayoutPanelSearchFilters.Controls.Add(this.flowLayoutPanel1, 0, 0);
                this.tableLayoutPanelSearchFilters.Controls.Add(this.tableLayoutPanel5, 1, 1);
+               this.tableLayoutPanelSearchFilters.Controls.Add(this.labelDataCount, 0, 1);
                this.tableLayoutPanelSearchFilters.Name = "tableLayoutPanelSearchFilters";
                // 
                // tableLayoutPanel6
                // 
                resources.ApplyResources(this.tableLayoutPanel6, "tableLayoutPanel6");
+               this.tableLayoutPanel6.Controls.Add(this.label1, 3, 0);
+               this.tableLayoutPanel6.Controls.Add(this.textBoxTargetTziros, 3, 1);
                this.tableLayoutPanel6.Controls.Add(this.textBoxTargetPct1, 0, 1);
                this.tableLayoutPanel6.Controls.Add(this.textBoxTargetPctΧ, 1, 1);
                this.tableLayoutPanel6.Controls.Add(this.textBoxTargetPct2, 2, 1);
                this.tableLayoutPanel6.Controls.Add(this.label3, 0, 0);
                this.tableLayoutPanel6.Name = "tableLayoutPanel6";
                // 
+               // label1
+               // 
+               resources.ApplyResources(this.label1, "label1");
+               this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
+               this.label1.ForeColor = System.Drawing.Color.White;
+               this.label1.Name = "label1";
+               // 
+               // textBoxTargetTziros
+               // 
+               resources.ApplyResources(this.textBoxTargetTziros, "textBoxTargetTziros");
+               this.textBoxTargetTziros.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
+               this.textBoxTargetTziros.Name = "textBoxTargetTziros";
+               // 
                // textBoxTargetPct1
                // 
                resources.ApplyResources(this.textBoxTargetPct1, "textBoxTargetPct1");
+               this.textBoxTargetPct1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
                this.textBoxTargetPct1.Name = "textBoxTargetPct1";
                // 
                // textBoxTargetPctΧ
                // 
                resources.ApplyResources(this.textBoxTargetPctΧ, "textBoxTargetPctΧ");
+               this.textBoxTargetPctΧ.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
                this.textBoxTargetPctΧ.Name = "textBoxTargetPctΧ";
                // 
                // textBoxTargetPct2
                // 
                resources.ApplyResources(this.textBoxTargetPct2, "textBoxTargetPct2");
+               this.textBoxTargetPct2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
                this.textBoxTargetPct2.Name = "textBoxTargetPct2";
                // 
                // label3
                // 
                resources.ApplyResources(this.label3, "label3");
+               this.label3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
                this.tableLayoutPanel6.SetColumnSpan(this.label3, 3);
                this.label3.ForeColor = System.Drawing.Color.White;
                this.label3.Name = "label3";
-               // 
-               // flowLayoutPanel1
-               // 
-               this.flowLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(49)))), ((int)(((byte)(29)))), ((int)(((byte)(63)))));
-               this.flowLayoutPanel1.Controls.Add(this.labelDataCount);
-               this.flowLayoutPanel1.Controls.Add(this.checkBoxShow2);
-               this.flowLayoutPanel1.Controls.Add(this.checkBoxShow1);
-               this.flowLayoutPanel1.Controls.Add(this.tableLayoutPanel3);
-               resources.ApplyResources(this.flowLayoutPanel1, "flowLayoutPanel1");
-               this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-               this.tableLayoutPanelSearchFilters.SetRowSpan(this.flowLayoutPanel1, 2);
-               // 
-               // labelDataCount
-               // 
-               resources.ApplyResources(this.labelDataCount, "labelDataCount");
-               this.labelDataCount.ForeColor = System.Drawing.Color.White;
-               this.labelDataCount.Name = "labelDataCount";
-               // 
-               // checkBoxShow2
-               // 
-               resources.ApplyResources(this.checkBoxShow2, "checkBoxShow2");
-               this.checkBoxShow2.ForeColor = System.Drawing.Color.White;
-               this.checkBoxShow2.Name = "checkBoxShow2";
-               this.checkBoxShow2.UseVisualStyleBackColor = true;
-               this.checkBoxShow2.CheckedChanged += new System.EventHandler(this.checkBoxShow2_CheckedChanged);
-               // 
-               // checkBoxShow1
-               // 
-               resources.ApplyResources(this.checkBoxShow1, "checkBoxShow1");
-               this.checkBoxShow1.ForeColor = System.Drawing.Color.White;
-               this.checkBoxShow1.Name = "checkBoxShow1";
-               this.checkBoxShow1.UseVisualStyleBackColor = true;
-               this.checkBoxShow1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-               // 
-               // tableLayoutPanel3
-               // 
-               resources.ApplyResources(this.tableLayoutPanel3, "tableLayoutPanel3");
-               this.tableLayoutPanel3.Controls.Add(this.textBoxTargetTziros, 1, 0);
-               this.tableLayoutPanel3.Controls.Add(this.label1, 0, 0);
-               this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-               // 
-               // textBoxTargetTziros
-               // 
-               resources.ApplyResources(this.textBoxTargetTziros, "textBoxTargetTziros");
-               this.textBoxTargetTziros.Name = "textBoxTargetTziros";
-               // 
-               // label1
-               // 
-               resources.ApplyResources(this.label1, "label1");
-               this.label1.ForeColor = System.Drawing.Color.White;
-               this.label1.Name = "label1";
                // 
                // tableLayoutPanel5
                // 
                resources.ApplyResources(this.tableLayoutPanel5, "tableLayoutPanel5");
                this.tableLayoutPanel5.Controls.Add(this.label4, 0, 0);
+               this.tableLayoutPanel5.Controls.Add(this.checkBoxShow2, 3, 1);
                this.tableLayoutPanel5.Controls.Add(this.textBoxOdds1, 0, 1);
+               this.tableLayoutPanel5.Controls.Add(this.checkBoxShow1, 3, 0);
                this.tableLayoutPanel5.Controls.Add(this.textBoxOddsX, 1, 1);
                this.tableLayoutPanel5.Controls.Add(this.textBoxOdds2, 2, 1);
                this.tableLayoutPanel5.Name = "tableLayoutPanel5";
@@ -284,24 +252,52 @@ namespace GoalsParser
                // label4
                // 
                resources.ApplyResources(this.label4, "label4");
+               this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
                this.tableLayoutPanel5.SetColumnSpan(this.label4, 3);
                this.label4.ForeColor = System.Drawing.Color.White;
                this.label4.Name = "label4";
                // 
+               // checkBoxShow2
+               // 
+               resources.ApplyResources(this.checkBoxShow2, "checkBoxShow2");
+               this.checkBoxShow2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
+               this.checkBoxShow2.ForeColor = System.Drawing.Color.White;
+               this.checkBoxShow2.Name = "checkBoxShow2";
+               this.checkBoxShow2.UseVisualStyleBackColor = false;
+               this.checkBoxShow2.CheckedChanged += new System.EventHandler(this.checkBoxShow2_CheckedChanged);
+               // 
                // textBoxOdds1
                // 
                resources.ApplyResources(this.textBoxOdds1, "textBoxOdds1");
+               this.textBoxOdds1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
                this.textBoxOdds1.Name = "textBoxOdds1";
+               // 
+               // checkBoxShow1
+               // 
+               resources.ApplyResources(this.checkBoxShow1, "checkBoxShow1");
+               this.checkBoxShow1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(15)))), ((int)(((byte)(76)))), ((int)(((byte)(117)))));
+               this.checkBoxShow1.ForeColor = System.Drawing.Color.White;
+               this.checkBoxShow1.Name = "checkBoxShow1";
+               this.checkBoxShow1.UseVisualStyleBackColor = false;
+               this.checkBoxShow1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
                // 
                // textBoxOddsX
                // 
                resources.ApplyResources(this.textBoxOddsX, "textBoxOddsX");
+               this.textBoxOddsX.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
                this.textBoxOddsX.Name = "textBoxOddsX";
                // 
                // textBoxOdds2
                // 
                resources.ApplyResources(this.textBoxOdds2, "textBoxOdds2");
+               this.textBoxOdds2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
                this.textBoxOdds2.Name = "textBoxOdds2";
+               // 
+               // labelDataCount
+               // 
+               resources.ApplyResources(this.labelDataCount, "labelDataCount");
+               this.labelDataCount.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(187)))), ((int)(((byte)(225)))), ((int)(((byte)(250)))));
+               this.labelDataCount.Name = "labelDataCount";
                // 
                // dataGridViewTextBoxColumn1
                // 
@@ -437,12 +433,9 @@ namespace GoalsParser
                this.tableLayoutPanel1.ResumeLayout(false);
                this.tableLayoutPanel2.ResumeLayout(false);
                this.tableLayoutPanelSearchFilters.ResumeLayout(false);
+               this.tableLayoutPanelSearchFilters.PerformLayout();
                this.tableLayoutPanel6.ResumeLayout(false);
                this.tableLayoutPanel6.PerformLayout();
-               this.flowLayoutPanel1.ResumeLayout(false);
-               this.flowLayoutPanel1.PerformLayout();
-               this.tableLayoutPanel3.ResumeLayout(false);
-               this.tableLayoutPanel3.PerformLayout();
                this.tableLayoutPanel5.ResumeLayout(false);
                this.tableLayoutPanel5.PerformLayout();
                this.contextMenuStrip1.ResumeLayout(false);
@@ -482,10 +475,8 @@ namespace GoalsParser
           private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
           private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn22;
           private System.Windows.Forms.TableLayoutPanel tableLayoutPanelSearchFilters;
-          private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
           private System.Windows.Forms.CheckBox checkBoxShow1;
           private System.Windows.Forms.CheckBox checkBoxShow2;
-          private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
           private System.Windows.Forms.Label label1;
           private System.Windows.Forms.TextBox textBoxTargetTziros;
           private System.Windows.Forms.TextBox textBoxTargetPct1;
@@ -493,7 +484,6 @@ namespace GoalsParser
           private System.Windows.Forms.TextBox textBoxOdds2;
           private System.Windows.Forms.TextBox textBoxOddsX;
           private System.Windows.Forms.TextBox textBoxOdds1;
-          private System.Windows.Forms.Label labelDataCount;
           private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
           private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
           private System.Windows.Forms.TableLayoutPanel tableLayoutPanel6;
@@ -501,6 +491,7 @@ namespace GoalsParser
           private System.Windows.Forms.TextBox textBoxTargetPct2;
           private System.Windows.Forms.Label label3;
           private System.Windows.Forms.Label label4;
+          private System.Windows.Forms.Label labelDataCount;
      }
 }
 

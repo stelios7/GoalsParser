@@ -22,3 +22,25 @@ C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Newtonsoft.Json.xml
 C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Resources\jsonDB.json
 C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Resources\out111.txt
 C:\Users\paokf\Documents\VS Studio\GoalsParser\bin\Debug\Resources\out222.txt
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.csprojAssemblyReference.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.MainForm.resources
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.Properties.Resources.resources
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.csproj.GenerateResource.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.csproj.CoreCompileInputs.cache
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.exe
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.pdb
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\GoalsParser.exe.config
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\GoalsParser.exe.manifest
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\GoalsParser.application
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\GoalsParser.exe
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\GoalsParser.pdb
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\HtmlAgilityPack.dll
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\HtmlAgilityPack.xml
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.TrustInfo.xml
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.exe.manifest
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.application
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\obj\Debug\GoalsParser.csproj.CopyComplete
+C:\Users\Stelios\Documents\Visual Studio 2019\Projects\GoalsParser\bin\Debug\Files\jsonDB.txt
